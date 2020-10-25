@@ -1,4 +1,5 @@
 <?php 
+require_once "dbupdate.php";
 
 $distanceMatrix = array();
 $cityData = array();
