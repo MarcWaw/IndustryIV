@@ -2,6 +2,14 @@ body {
     background-image: url("Images/background.png");
     background-repeat: repeat-x;
 }
+footer
+{
+    clear: both;
+    background-color:  #414141;
+    color: white;
+    text-align: center;
+    padding: 5px;
+}
 #container
 {
     width: 1000px;
@@ -30,12 +38,4 @@ body {
     padding: 20px;
     width: 820px;
     min-height: 600px;
-}
-#footer
-{
-    clear: both;
-    background-color:  #414141;
-    color: white;
-    text-align: center;
-    padding: 5px;
 }
