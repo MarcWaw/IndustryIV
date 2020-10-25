@@ -24,21 +24,6 @@
                 <input type="submit" value="Wczytaj" />
                 <br />
             </form>
-            <form action="dbupdate.php" method="post">
-                Name:
-                <input type="text" name="city_name"/> 
-                <br />
-                Postcode:
-                <input type="text" name="city_postcode"/> 
-                <br />
-                Latitude:
-                <input type="text" name="city_latitude"/> 
-                <br />
-                Longitude:
-                <input type="text" name="city_longitude"/> 
-                <input type="submit" value="Add" />
-                <br />
-            </form>
         </div>
         <footer>
             Laboratorium Przemysł 4.0 

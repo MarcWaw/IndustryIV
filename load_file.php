@@ -1,5 +1,7 @@
 <?php 
 require_once "dbupdate.php";
+require_once "dbconnect.php";
+$connection = @new mysqli($host, $db_user, $db_password, $db_name);
 
 $distanceMatrix = array();
 $cityData = array();
@@ -25,11 +27,45 @@ if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
         }
         else{
             for ($i = 0; $i < 4; $i++) {
-                $data[$i] = str_replace(',','.',$data[$i]);
+                if($i>1) $data[$i] = str_replace(',','.',$data[$i]);
                 $cityData[$row-$nodes-3][$i] = $data[$i];
             }
         }
         $row++;
+    }
+    if($connection->connect_errno!=0)
+    {
+        echo "Connection failed: ".$connection->connect_errno;
+    }
+    else{
+        for($i = 0; $i < $nodes; $i++)
+        {   
+            $name = $cityData[$i][1];
+            $postcode = $cityData[$i][0];
+            $latitude = $cityData[$i][2];
+            $longitude = $cityData[$i][3];
+
+            $sql = "SELECT * FROM cities WHERE Name='$name'";
+            $result = $connection->query($sql);
+            if($result->num_rows > 0)
+            {
+                echo " Istnieje już taki record: ". "Name: ". $name. " | Postcode: ". $postcode. " | Latitude: ". $latitude. " | Longitude: ". $longitude ."<br/>";
+            }
+            else {
+                $sql = "INSERT INTO cities (Name, Postcode, Latitude, Longitude)
+                        VALUES ('$name', '$postcode', '$latitude', '$longitude')";
+            
+                if($connection->query($sql) === TRUE)
+                {       
+                    echo "New record created succesfully! ". "Name: ". $name. " | Postcode: ". $postcode. " | Latitude: ". $latitude. " | Longitude: ". $longitude ."<br/>";    
+                }
+                else
+                {
+                    echo "Error: " . $sql . "<br>" . $connection->error;
+                }
+            }
+        }
+        $connection->close();
     }
     fclose($handle);
 }
