@@ -1,3 +1,7 @@
+body {
+    background-image: url("Images/background.png");
+    background-repeat: repeat-x;
+}
 #container
 {
     width: 1000px;
@@ -22,7 +26,7 @@
 #content
 {
     float: left;
-    background-color: #0047ab;
+    background-color: gray;
     padding: 20px;
     width: 820px;
     min-height: 600px;
