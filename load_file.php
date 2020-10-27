@@ -5,47 +5,43 @@ require_once "dbupdate.php";
 require_once "dbconnect.php";
 $connection = @new mysqli($host, $db_user, $db_password, $db_name);
 
-$distanceMatrix = array();
-$cityData = array();
-$nodes = 0;
-$UoD = '';
-
-unset($_SESSION['distanceMatrix_session']);
-unset($_SESSION['cityData_session']);
-unset($_SESSION['Nodes_session']);
-unset($_SESSION['UoD_session']);
-
 $file_name = $_POST['file_name'];
-$row = 1;
-unset($data);
-if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
-    while (($data = fgetcsv($handle, 1000000, ";")) !== FALSE) {
-        $num = count($data);
-        if($row == 1) $nodes = $data[0];
-        elseif($row == 2) $UoD = $data[0];
-        elseif($row <= ($nodes + 2)){
-            for ($i = 0, $j = 0; $i < $num; $i++) {
-                    if ($data[$i]=='')$i = $num;
-                    else {
-                        $data[$i] = str_replace(',','.',$data[$i]);
-                        $_SESSION['distanceMatrix_session'][$row - 3][$i] = $data[$i];
-                    }
+
+function load_citydata_file($f){
+    unset($_SESSION['distanceMatrix_session']);
+    unset($_SESSION['cityData_session']);
+    unset($_SESSION['Nodes_session']);
+    unset($_SESSION['UoD_session']);
+
+    $row = 1;
+    unset($data);
+    if (($handle = fopen('CSV/'. $f . '.csv', 'r')) !== FALSE) {
+        while (($data = fgetcsv($handle, 1000000, ";")) !== FALSE) {
+            $num = count($data);
+            if($row == 1) $_SESSION['Nodes_session'] = $data[0];
+            elseif($row == 2) $_SESSION['UoD_session'] = $data[0];
+            elseif($row <= ($_SESSION['Nodes_session'] + 2)){
+                for ($i = 0; $i < $num; $i++) {
+                        if ($data[$i]=='')$i = $num;
+                        else {
+                            $data[$i] = str_replace(',','.',$data[$i]);
+                            $_SESSION['distanceMatrix_session'][$row - 3][$i] = $data[$i];
+                        }
+                }
             }
-        }
-        else{
-            for ($i = 0; $i < 4; $i++) {
-                if($i>1) $data[$i] = str_replace(',','.',$data[$i]);
-                $_SESSION['cityData_session'][$row-$nodes-3][$i] = $data[$i];
+            else{
+                for ($i = 0; $i < 4; $i++) {
+                    if($i>1) $data[$i] = str_replace(',','.',$data[$i]);
+                    $_SESSION['cityData_session'][$row-$_SESSION['Nodes_session']-3][$i] = $data[$i];
+                }
             }
+            $row++;
         }
-        $row++;
+        fclose($handle);
     }
-    fclose($handle);
 }
 
-$_SESSION['Nodes_session'] = $nodes;
-$_SESSION['UoD_session'] = $UoD;
-
+load_citydata_file($file_name);
 header('Location: index.php');
 
 /*
