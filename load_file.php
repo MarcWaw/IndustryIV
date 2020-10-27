@@ -17,6 +17,7 @@ unset($_SESSION['UoD_session']);
 
 $file_name = $_POST['file_name'];
 $row = 1;
+unset($data);
 if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
     while (($data = fgetcsv($handle, 1000000, ";")) !== FALSE) {
         $num = count($data);

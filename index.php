@@ -32,7 +32,7 @@
                 <br />
             </form>
             <h2>4. Wyświetl dane zamówienia</h2>
-            <form action="display_Data.php">
+            <form action="display_Order.php">
                 <input type="submit" value="Wyświetl" />
                 <br />
             </form>
