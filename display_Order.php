@@ -6,11 +6,17 @@ $orderNodes = 0;
 
 function display_orderTable($m)
 {
+    $table_names = array(
+        0 => "Cel",
+        1 => "Długość",
+        2 => "Waga",  
+    );
+    
     echo '<table border="1">';
     echo '<tr>';
     echo '<td>', 'ID', '</td>';
     foreach(array_keys(current($m)) as $i) { 
-        echo '<td>', $i ,'</td>';
+        echo '<td>', $table_names[$i] ,'</td>';
     }
     echo '</tr>';
 
@@ -20,8 +26,10 @@ function display_orderTable($m)
         foreach(array_keys($m[$j]) as $i) {
             if($i == 0)
                 echo '<td>', $_SESSION['cityData_session'][$m[$j][$i]-1][1], '</td>';
+            else if($i == 1)
+                echo '<td>', $m[$j][$i] . " m", '</td>';
             else
-                echo '<td>', $m[$j][$i], '</td>';
+                echo '<td>', $m[$j][$i] . " kg", '</td>';
         }
         echo '</tr>';
     }
