@@ -1,15 +1,21 @@
-<?php 
+<?php
+session_start();
+
 require_once "dbupdate.php";
 require_once "dbconnect.php";
 $connection = @new mysqli($host, $db_user, $db_password, $db_name);
 
 $distanceMatrix = array();
 $cityData = array();
-
-$file_name = $_POST['file_name'];
-
 $nodes = 0;
 $UoD = '';
+
+unset($_SESSION['distanceMatrix_session']);
+unset($_SESSION['cityData_session']);
+unset($_SESSION['Nodes_session']);
+unset($_SESSION['UoD_session']);
+
+$file_name = $_POST['file_name'];
 $row = 1;
 if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
     while (($data = fgetcsv($handle, 1000000, ";")) !== FALSE) {
@@ -21,76 +27,27 @@ if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
                     if ($data[$i]=='')$i = $num;
                     else {
                         $data[$i] = str_replace(',','.',$data[$i]);
-                        $distanceMatrix[$row - 3][$i] = $data[$i];
+                        $_SESSION['distanceMatrix_session'][$row - 3][$i] = $data[$i];
                     }
             }
         }
         else{
             for ($i = 0; $i < 4; $i++) {
                 if($i>1) $data[$i] = str_replace(',','.',$data[$i]);
-                $cityData[$row-$nodes-3][$i] = $data[$i];
+                $_SESSION['cityData_session'][$row-$nodes-3][$i] = $data[$i];
             }
         }
         $row++;
     }
-    if($connection->connect_errno!=0)
-    {
-        echo "Connection failed: ".$connection->connect_errno;
-    }
-    else{
-        for($i = 0; $i < $nodes; $i++)
-        {   
-            $name = $cityData[$i][1];
-            $postcode = $cityData[$i][0];
-            $latitude = $cityData[$i][2];
-            $longitude = $cityData[$i][3];
-
-            $sql = "SELECT * FROM cities WHERE Name='$name'";
-            $result = $connection->query($sql);
-            if($result->num_rows > 0)
-            {
-                echo " Istnieje już taki record: ". "Name: ". $name. " | Postcode: ". $postcode. " | Latitude: ". $latitude. " | Longitude: ". $longitude ."<br/>";
-            }
-            else {
-                $sql = "INSERT INTO cities (Name, Postcode, Latitude, Longitude)
-                        VALUES ('$name', '$postcode', '$latitude', '$longitude')";
-            
-                if($connection->query($sql) === TRUE)
-                {       
-                    echo "New record created succesfully! ". "Name: ". $name. " | Postcode: ". $postcode. " | Latitude: ". $latitude. " | Longitude: ". $longitude ."<br/>";    
-                }
-                else
-                {
-                    echo "Error: " . $sql . "<br>" . $connection->error;
-                }
-            }
-        }
-        $connection->close();
-    }
     fclose($handle);
 }
 
-//Show Table with CSV Data
-function display_dataTable($m){
-    echo '<table border="1">';
-    echo '<tr>';
-    echo '<td>', 'ID', '</td>';
-    foreach(array_keys(current($m)) as $i) { 
-        echo '<td>', $i ,'</td>';
-    }
-    echo '</tr>';
+$_SESSION['Nodes_session'] = $nodes;
+$_SESSION['UoD_session'] = $UoD;
 
-    foreach(array_keys($m) as $j) {
-        echo '<tr>';
-        echo '<td>', $j, '</td>';
-        foreach(array_keys($m[$j]) as $i) {
-            echo '<td>', $m[$j][$i], '</td>';
-        }
-        echo '</tr>';
-    }
-    echo '</table>';
-}
+header('Location: index.php');
 
+/*
 function display_permutation($h, $p, $cD){
     $x = 0;
     foreach($p as $value){
@@ -112,11 +69,6 @@ function calculate_distance($p, $matrix){
     }
     return $sum;
 }
-
-echo '<h1>Tabela Danych - informacje o miastach</h1>';
-display_dataTable($cityData);
-echo '<h1>Tabela Danych - odległości między miastami </h1>';
-display_dataTable($distanceMatrix);
 
 $permutation = array();
 $hub = rand(0, $nodes - 1);
@@ -144,7 +96,7 @@ foreach($permutation as $value){
 echo ']';
 echo '<h1>Trasy pojazdów</h1>';
 display_permutation($hub,$permutation,$cityData);
-
+*/
 //echo '<h1>Całkowita przebyta odległość</h1>';
 //$sum = calculate_distance($permutation, $distanceMatrix);
 //echo $sum . " " . $UoD . "<br>";

@@ -1,32 +1,39 @@
 <?php
-
-    
-function displayCitiesTable(){
-    require_once "dbconnect.php";
-    $connection = @new mysqli($host, $db_user, $db_password, $db_name);
-    
+function update_cityData($connection, $cityData, $nodes){
     if($connection->connect_errno!=0)
     {
-        echo "Error: ".$connection->connect_errno;
+        echo "Connection failed: ".$connection->connect_errno;
     }
-    else
-    {   
-        $sql = "SELECT * FROM cities";
-        $result = $connection->query($sql);
-        if($result->num_rows > 0)
-        {       
-            while($row = $result->fetch_assoc())
+    else{
+        for($i = 0; $i < $nodes; $i++)
+        {   
+            $name = $cityData[$i][1];
+            $postcode = $cityData[$i][0];
+            $latitude = $cityData[$i][2];
+            $longitude = $cityData[$i][3];
+
+            $sql = "SELECT * FROM cities WHERE Name='$name'";
+            $result = $connection->query($sql);
+            if($result->num_rows > 0)
             {
-                echo "id: " . $row["id"] . " | Name: " . $row["Name"] . " | Postcode: " . $row["Postcode"] . " | Latitude: " . $row["Latitude"] . " | Longitude: " . $row["Longitude"] . "<br/>";
+                echo " Istnieje już taki record: ". "Name: ". $name. " | Postcode: ". $postcode. " | Latitude: ". $latitude. " | Longitude: ". $longitude ."<br/>";
             }
-            $result->free_result();
+            else {
+                $sql = "INSERT INTO cities (Name, Postcode, Latitude, Longitude)
+                        VALUES ('$name', '$postcode', '$latitude', '$longitude')";
+
+                if($connection->query($sql) === TRUE)
+                {       
+                    echo "New record created succesfully! ". "Name: ". $name. " | Postcode: ". $postcode. " | Latitude: ". $latitude. " | Longitude: ". $longitude ."<br/>";    
+                }
+                else
+                {
+                    echo "Error: " . $sql . "<br>" . $connection->error;
+                }
+            }   
         }
-        else
-        {
-            echo 'Kupsztal!';
-        }
-    
         $connection->close();
     }
 }
+
 ?>
