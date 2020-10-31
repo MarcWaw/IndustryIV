@@ -11,6 +11,15 @@
         <div id="logo">
             <h1>VRP – problem marszrutyzacji pojazdów</h1>
         </div>
+        <div id="nav">
+            <ul>
+                <li><a class="active"> Home </a></li>
+                <li><a>Order</a></li>
+                <li><a>Data</a></li>
+                <li><a>Map</a></li>
+                <li><a>Algorithms</a></li>
+            </ul>
+        </div>
         <div id="content">
             <h2>1. Wczytaj dane o miastach z pliku</h2>
             <form action="load_file.php" method="post">

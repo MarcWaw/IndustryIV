@@ -4,14 +4,16 @@ body {
     font-size: 20px;
     margin: 0 !important;
 }
-footer
+
+#nav
 {
-    clear: both;
-    background-color:  #414141;
-    color: white;
-    text-align: center;
-    padding: 5px;
+    float: left;
+    background-color: lightgray;
+    width: 120px;
+    min-height: 620px;
+    padding: 10px;
 }
+
 #container
 {
     width: 1000px;
@@ -25,14 +27,7 @@ footer
     text-align: center;
     padding: 5px;
 }
-#nav
-{
-    float: left;
-    background-color: lightgray;
-    width: 120px;
-    min-height: 620px;
-    padding: 10px;
-}
+
 #content
 {
     float: left;

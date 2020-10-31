@@ -1,48 +1,30 @@
 <?php
 session_start();
+include_once "display.php";
+include_once "algorithms.php";
 
 $orderMatrix = array();
-$orderNodes = 0;
 
-function display_orderTable($m)
-{
-    $table_names = array(
-        0 => "Cel",
-        1 => "Długość",
-        2 => "Waga",  
-    );
-    
-    echo '<table border="1">';
-    echo '<tr>';
-    echo '<td>', 'ID', '</td>';
-    foreach(array_keys(current($m)) as $i) { 
-        echo '<td>', $table_names[$i] ,'</td>';
-    }
-    echo '</tr>';
-
-    foreach(array_keys($m) as $j) {
-        echo '<tr>';
-        echo '<td>', $j, '</td>';
-        foreach(array_keys($m[$j]) as $i) {
-            if($i == 0)
-                echo '<td>', $_SESSION['cityData_session'][$m[$j][$i]-1][1], '</td>';
-            else if($i == 1)
-                echo '<td>', $m[$j][$i] . " m", '</td>';
-            else
-                echo '<td>', $m[$j][$i] . " kg", '</td>';
-        }
-        echo '</tr>';
-    }
-    echo '</table>';
-}
-
-$orderNodes = $_SESSION['OrderNodes_session'];
-if(isset($_SESSION['orderMatrix_session'])){
-    $orderMatrix = $_SESSION['orderMatrix_session'];
-}
-else {
-    echo "Error: SESSION Variable is not set! </br>";
-}
+if(isset($_SESSION['orderMatrix_session'])){$orderMatrix = $_SESSION['orderMatrix_session'];}
+else {echo "Error: SESSION Variable is not set! </br>";}
 echo '<h1>Tabela Danych - zamówienia </h1>';
 display_orderTable($orderMatrix);
+
+echo '<h1>Algorytm zachłanny VRP</h1>';
+
+$hub = rand(0,$_SESSION['OrderNodes_session'] - 1);
+echo "Hub: " . $hub . "<br/>";
+
+$nbofTrucks = rand(6,12);
+echo "Number of Trucks: " . $nbofTrucks . "<br/>";
+
+$orders_array = array();
+for($i=0; $i < $_SESSION['OrderNodes_session']; $i++){
+    $orders_array[$i] = $_SESSION['orderMatrix_session'][$i][0];
+}
+
+$calculatedP = greedyVRP($orders_array, $_SESSION['distanceMatrix_session'], $hub, $nbofTrucks, $_SESSION['OrderNodes_session'] - 1);
+
+echo "<br/><br/> Final Permutation: <br/>";
+display_final_permutation($calculatedP, $hub);
 ?>
