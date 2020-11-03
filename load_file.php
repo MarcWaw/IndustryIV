@@ -42,7 +42,7 @@ function load_citydata_file($f){
 }
 
 load_citydata_file($file_name);
-header('Location: index.php');
+header('Location: data.php');
 
 /*
 function display_permutation($h, $p, $cD){
