@@ -5,17 +5,6 @@ body {
     margin: 0 !important;
 }
 
-#logo
-{
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #414141;
-    color: white;
-    text-align: center;
-    padding: 5px;
-}
-
 #nav
 {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -53,7 +42,8 @@ body {
 #content
 {
     width: 960px;
-    height: 1000px;
+    min-height: 1000px;
+    text-align: center;
     padding: 20px;
     background-color: #333333;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
@@ -84,3 +74,33 @@ body {
     overflow: hidden;
     background-color: #777;
 }
+
+#content #tablebox{
+    text-align: center;
+    height: 500px;
+    overflow-x:auto;
+    overflow-y: auto;
+}
+
+#content #tablebox table {
+    border-collapse: collapse;
+    border-spacing: 0;
+    height: 500px;
+    width: 100%;
+    border: 1px solid #ddd;
+  }
+
+#content #tablebox th, td {
+    text-align: left;
+    padding: 8px;
+  }
+
+#content #tablebox th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: rgb(218, 167, 0);
+    color: white;
+  }
+
+#content #tablebox tr:hover {background-color: #555;}

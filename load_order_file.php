@@ -16,7 +16,7 @@ if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
         if($row == 1) $_SESSION['OrderNodes_session'] = $data[0];
         else{
             for ($i = 0; $i < 3; $i++) {
-                if($i>1) $data[$i] = str_replace(',','.',$data[$i]);
+                $data[$i] = str_replace(',','.',$data[$i]);
                 $_SESSION['orderMatrix_session'][$row-2][$i] = $data[$i];
             }
         }
@@ -25,5 +25,5 @@ if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
     fclose($handle);
 }
 
-header('Location: data.php');
+header('Location: schedule.php');
 ?>

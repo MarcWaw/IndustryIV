@@ -10,9 +10,9 @@ function display_cityTable($m)
     );
     echo '<table border="1">';
     echo '<tr>';
-    echo '<td>', 'ID', '</td>';
+    echo '<th>', 'ID', '</th>';
     foreach(array_keys(current($m)) as $i) { 
-        echo '<td>', $table_names[$i] ,'</td>';
+        echo '<th>', $table_names[$i] ,'</th>';
     }
     echo '</tr>';
     foreach(array_keys($m) as $j) {
@@ -55,9 +55,9 @@ function display_orderTable($m)
     );
         echo '<table border="1">';
     echo '<tr>';
-    echo '<td>', 'ID', '</td>';
+    echo '<th>', 'ID', '</th>';
     foreach(array_keys(current($m)) as $i) { 
-        echo '<td>', $table_names[$i] ,'</td>';
+        echo '<th>', $table_names[$i] ,'</th>';
     }
     echo '</tr>';
     foreach(array_keys($m) as $j) {
