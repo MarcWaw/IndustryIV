@@ -38,14 +38,16 @@
                 <br />
             </form>
         </div>
-    <h2>Algorytm zachłanny dla VRP</h2>
+        <h2>Algorytm zachłanny dla VRP</h2>
+        <canvas id="Map" width="850" height="850" style="border:1px solid #000000;">
+        </canvas>
+        <br/>
         <?php
             include_once "algorithms.php";
             $hub = rand(0,$_SESSION['OrderNodes_session'] - 1);
-            echo "Hub: " . $hub . "<br/>";
+            echo "Hub: " . $hub . ": " . $_SESSION['cityData_session'][$hub][1] ."<br/>";
 
             $nbofTrucks = 8;
-            echo "Number of Trucks: " . $nbofTrucks . "<br/>";
 
             $orders_array = array();
             for($i=0; $i < $_SESSION['OrderNodes_session']; $i++){
@@ -57,14 +59,19 @@
             $calculatedP = greedyVRP($orders_array, $_SESSION['distanceMatrix_session'], $hub, $nbofTrucks, $_SESSION['OrderNodes_session'] - 1);
             $timeElapsed = microtime(true) - $start;
 
-            echo "Permutacja Końcowa: ";
-            display_final_permutation($calculatedP, $hub);
+            display_on_map($calculatedP, $_SESSION['cityData_session'], $hub, "Map");
+
+            echo "Trasy pojazdów: ";
+            display_final_permutation($calculatedP, $hub, $_SESSION['cityData_session']);
             echo "<br/>";
 
             echo "Czas działania algorytmu: " . $timeElapsed * 100 . "ms<br/>";
             ?>
+
             <h2>Algorytm zachłanny dla CVRP</h2>
-        <?php
+            <canvas id="Map2" width="850" height="850" style="border:1px solid #000000;">
+            </canvas>
+            <?php
             include_once "algorithms.php";
             $orders_array = array();
             for($i=0; $i < $_SESSION['OrderNodes_session']; $i++){
@@ -76,12 +83,17 @@
             $calculatedP = greedyCVRP($orders_array, $_SESSION['distanceMatrix_session'], $hub, $_SESSION['orderMatrix_session']);
             $timeElapsed = microtime(true) - $start;
 
-            echo "Permutacja końcowa: ";
-            display_final_permutation($calculatedP, $hub);
+            display_on_map($calculatedP, $_SESSION['cityData_session'], $hub, "Map2");
+
+            echo "<br/>";
+            echo "Trast pojazdów: ";
+            display_final_permutation($calculatedP, $hub, $_SESSION['cityData_session']);
             echo "<br/>";
 
             echo "Czas działania algorytmu: " . $timeElapsed * 100 . "ms<br/>";
             ?>
+
+            <h2>Algorytm metaheurystyczny</h2>
     </div>  
     <script>
         var coll = document.getElementsByClassName("collapsible");
