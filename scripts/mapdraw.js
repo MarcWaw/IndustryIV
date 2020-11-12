@@ -20,18 +20,12 @@ function connectPoints(cordX1, cordY1, cordX2, cordY2, canvasID, color){
     var c = document.getElementById(canvasID);
     var ctx = c.getContext("2d");
     ctx.strokeStyle = color;
+    ctx.beginPath();
     ctx.moveTo(y1, -x1+850);
     ctx.lineTo(y2, -x2+850);
     ctx.stroke();
 }
 
-function moveCanvas(canvasID){
-    var canvas = document.getElementById(canvasID),
-    context = canvas.getContext('2d');
-    
-    context.translate(0,850);
-    context.rotate(270 * Math.PI / 180);
-}
 
 
 
