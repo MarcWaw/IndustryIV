@@ -47,6 +47,28 @@ $distanceMatrix = array();
                 <br />
             </form>
         </div>
+        <h1>Tabela Danych - Zamówienia</h1>
+        <div id="tablebox">
+        <?php
+        include_once "display.php";
+        include_once "algorithms.php";
+        
+        $orderMatrix = array();
+        
+        if(isset($_SESSION['orderMatrix_session'])){$orderMatrix = $_SESSION['orderMatrix_session'];}
+        else {echo "Error: SESSION Variable is not set! </br>";}
+        display_orderTable($orderMatrix);
+        ?>
+        </div>
+        <button type="button" class="collapsible">Wczytaj dane o zamówieniach</button>
+        <div class="colcontent">
+            <form action="load_order_file.php" method="post">
+                Nazwa Pliku:
+                <input type="text" name="order_file_name"/> 
+                <input type="submit" value="Wczytaj" />
+                <br />
+            </form>
+        </div>
     </div>  
     <script>
         var coll = document.getElementsByClassName("collapsible");

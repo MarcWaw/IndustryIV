@@ -25,5 +25,5 @@ if (($handle = fopen('CSV/'.$file_name . '.csv', 'r')) !== FALSE) {
     fclose($handle);
 }
 
-header('Location: schedule.php');
+header('Location: data.php');
 ?>

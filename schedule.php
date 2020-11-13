@@ -19,28 +19,6 @@
         </ul>
     </div>
     <div id="content">
-    <h1>Tabela Danych - Zamówienia</h1>
-        <div id="tablebox">
-        <?php
-        include_once "display.php";
-        include_once "algorithms.php";
-        
-        $orderMatrix = array();
-        
-        if(isset($_SESSION['orderMatrix_session'])){$orderMatrix = $_SESSION['orderMatrix_session'];}
-        else {echo "Error: SESSION Variable is not set! </br>";}
-        display_orderTable($orderMatrix);
-        ?>
-        </div>
-        <button type="button" class="collapsible">Wczytaj dane o zamówieniach</button>
-        <div class="colcontent">
-            <form action="load_order_file.php" method="post">
-                Nazwa Pliku:
-                <input type="text" name="order_file_name"/> 
-                <input type="submit" value="Wczytaj" />
-                <br />
-            </form>
-        </div>
         <div id="Hub">
         <form action="#" method="post">
             <label for="Cities">Wybierz Hub:</label>
@@ -61,7 +39,10 @@
         ?>
         </div>
         <?php 
-        $hub = $_SESSION['Hub_session']; //rand(0,$_SESSION['OrderNodes_session'] - 1);
+        if(isset($_SESSION['Hub_session']))
+            $hub = $_SESSION['Hub_session']; //rand(0,$_SESSION['OrderNodes_session'] - 1);
+        else
+            $hub = 0;
         echo "Hub: " . $hub . ", " . $_SESSION['cityData_session'][$hub][1] ."<br/>";
         ?>
         <h2>Algorytm zachłanny dla VRP</h2>
@@ -70,7 +51,7 @@
         <br/>
         <?php
 
-            $nbofTrucks = 8;
+            $nbofTrucks = $_SESSION['OrderNodes_session']/4;
 
             $orders_array = array();
             for($i=0; $i < $_SESSION['OrderNodes_session']; $i++){
@@ -95,7 +76,6 @@
             <canvas id="Map2" width="850" height="850" style="border:1px solid #000000;">
             </canvas>
             <?php
-            include_once "algorithms.php";
             $orders_array = array();
             for($i=0; $i < $_SESSION['OrderNodes_session']; $i++){
                 $orders_array[$i] = $_SESSION['orderMatrix_session'][$i][0];
@@ -115,8 +95,30 @@
 
             echo "Czas działania algorytmu: " . $timeElapsed * 100 . "ms<br/>";
             ?>
-
             <h2>Algorytm metaheurystyczny - Symulowane wyżarzanie</h2>
+            <canvas id="Map3" width="850" height="850" style="border:1px solid #000000;">
+            </canvas>
+            <?php
+            $orders_array = array();
+            for($i=0; $i < $_SESSION['OrderNodes_session']; $i++){
+                $orders_array[$i] = $_SESSION['orderMatrix_session'][$i][0];
+            }
+            array_splice($orders_array, $hub, 1);
+            
+            $start = microtime(true);
+            $startP = greedyCVRP($orders_array, $_SESSION['distanceMatrix_session'], $hub, $_SESSION['orderMatrix_session']);
+            $calculatedP = simulatedAnnealing($startP, $_SESSION['distanceMatrix_session'],$_SESSION['orderMatrix_session'], 1, $hub);
+            $timeElapsed = microtime(true) - $start;
+
+            display_on_map($calculatedP, $_SESSION['cityData_session'], $hub, "Map3");
+
+            echo "<br/>";
+            echo "Trasy pojazdów: ";
+            display_final_permutation($calculatedP, $hub, $_SESSION['cityData_session'], $_SESSION['distanceMatrix_session'],$_SESSION['orderMatrix_session']);
+            echo "<br/>";
+
+            echo "Czas działania algorytmu: " . $timeElapsed * 100 . "ms<br/>";
+            ?>
     </div>  
     <script>
         var coll = document.getElementsByClassName("collapsible");

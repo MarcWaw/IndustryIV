@@ -46,7 +46,7 @@ function display_final_permutation($a, $h, $cd, $dM, $oD){
     echo "<br/>";
 }
 
-function display_on_map($permutaion, $cityData, $hub, $canvasID){
+function display_on_map($permutation, $cityData, $hub, $canvasID){
     $color = array(
         0 => "#ffffff",
         1 => "#ff0000",
@@ -68,22 +68,53 @@ function display_on_map($permutaion, $cityData, $hub, $canvasID){
         17 => "#D2691E",
         18 => "#F5FFFA",
         19 => "#F8F8FF",
+        20 => "#ffffff",
+        21 => "#ff0000",
+        22 => "#ff7f50",
+        23 => "#ffa500",
+        24 => "#ffd700",
+        25 => "#ffff00",
+        26 => "#00ff00",
+        27 => "#7fff00",
+        28 => "#98FB98",
+        29 => "#20B2AA",
+        30 => "#00FFFF",
+        31 => "#00BFFF",
+        32 => "#1E90FF",
+        33 => "#0000FF",
+        34 => "#8A2BE2",
+        35 => "#FF00FF",
+        36 => "#FF1493",
+        37 => "#D2691E",
+        38 => "#F5FFFA",
+        39 => "#F8F8FF",
+        40 => "#20B2AA",
+        41 => "#00FFFF",
+        42 => "#00BFFF",
+        43 => "#1E90FF",
+        44 => "#0000FF",
+        45 => "#8A2BE2",
+        46 => "#FF00FF",
+        47 => "#FF1493",
+        48 => "#D2691E",
+        49 => "#F5FFFA",
+        50 => "#F8F8FF",
     );
     $change = 0;
     echo '<script type="text/javascript" src="scripts/mapdraw.js"></script>';
             echo '<script type="text/javascript">';
-            for($i = 0; $i < sizeof($permutaion); $i++){
+            for($i = 0; $i < sizeof($permutation); $i++){
                 if($i == 0){
-                    echo 'drawPoint(' . $cityData[$permutaion[$i]][2].',' . $cityData[$permutaion[$i]][3] . ',' . '"'. $canvasID .'"' . ',"' . $cityData[$permutaion[$i]][1] . '", "'. $color[$change] .'");';
+                    echo 'drawPoint(' . $cityData[$permutation[$i]][2].',' . $cityData[$permutation[$i]][3] . ',' . '"'. $canvasID .'"' . ',"' . $cityData[$permutation[$i]][1] . '", "'. $color[$change] .'");';
                 }
-                elseif($hub == $permutaion[$i]){
+                elseif($hub == $permutation[$i]){
                     
-                    echo 'connectPoints(' . $cityData[$permutaion[$i-1]][2] . ',' . $cityData[$permutaion[$i-1]][3] . ',' . $cityData[$permutaion[$i]][2] . ',' . $cityData[$permutaion[$i]][3] . ',"'. $canvasID .'", "'. $color[$change] .'");';
+                    echo 'connectPoints(' . $cityData[$permutation[$i-1]][2] . ',' . $cityData[$permutation[$i-1]][3] . ',' . $cityData[$permutation[$i]][2] . ',' . $cityData[$permutation[$i]][3] . ',"'. $canvasID .'", "'. $color[$change] .'");';
                     $change++;
                 }
                 else{
-                    echo 'connectPoints(' . $cityData[$permutaion[$i-1]][2] . ',' . $cityData[$permutaion[$i-1]][3] . ',' . $cityData[$permutaion[$i]][2] . ',' . $cityData[$permutaion[$i]][3] . ',"'. $canvasID .'", "'. $color[$change] .'");';
-                    echo 'drawPoint(' . $cityData[$permutaion[$i]][2].',' . $cityData[$permutaion[$i]][3] . ',' . '"'. $canvasID .'"' . ',"' . $cityData[$permutaion[$i]][1] . '", "'. $color[$change] .'");';
+                    echo 'connectPoints(' . $cityData[$permutation[$i-1]][2] . ',' . $cityData[$permutation[$i-1]][3] . ',' . $cityData[$permutation[$i]][2] . ',' . $cityData[$permutation[$i]][3] . ',"'. $canvasID .'", "'. $color[$change] .'");';
+                    echo 'drawPoint(' . $cityData[$permutation[$i]][2].',' . $cityData[$permutation[$i]][3] . ',' . '"'. $canvasID .'"' . ',"' . $cityData[$permutation[$i]][1] . '", "'. $color[$change] .'");';
                 }
             }
             echo '</script>';
@@ -191,38 +222,77 @@ function swap($permutaion, $first, $second){
     return $tempPermutation;
 }
 
-function calculateTotalDistance($permutaion, $distanceMatrix){
+function calculateTotalDistance($permutation, $distanceMatrix){
     $TotalDistance = 0;
-    for($i=0; $i<sizeof($permutaion); $i++){
+    for($i=0; $i<sizeof($permutation); $i++){
         if($i==0);
         else{
-            $TotalDistance = $TotalDistance + $distanceMatrix[$permutaion[$i-1]][$permutaion[$i]];
+            $TotalDistance = $TotalDistance + $distanceMatrix[$permutation[$i-1]][$permutation[$i]];
         }
     }
     return $TotalDistance;
 }
 
-function simulatedAnnealing($permutation, $distanceMatrix, $hub, $orderMatrix){
-    $tempPermutation = $permutation;
-    $T0 = 10000;
-    $Tend = 0;
-    $L = sizeof($tempPermutation) * sizeof($tempPermutation);
+function reduceT($T, $it){return $T/log($it+1);}
+
+function checkConditions($permutation, $orderMatrix, $hub){
+    $tempMass = 0;
+    $tempSpace = 0;
+    for($i = 0; $i < sizeof($permutation); $i++){
+        if($i==0);
+        elseif($permutation[$i] == $hub){
+            if($tempMass <= 8000 && $tempSpace <= 7.8){
+            $tempMass = 0;
+            $tempSpace = 0;
+            }
+            else
+                return FALSE;
+        }
+        else{
+            if($tempMass <= 8000 && $tempSpace <= 7.8){
+                $tempMass = $tempMass + $orderMatrix[$permutation[$i]][2];;
+                $tempSpace = $tempSpace + $orderMatrix[$permutation[$i]][1];
+            }
+            else
+                return FALSE;
+        }
+    }
+    return TRUE;
+}
+
+function simulatedAnnealing($permutation, $distanceMatrix, $orderMatrix, $Tend, $hub){
+    $it = 0;
     unset($tempPermutation);
+    unset($finalPermutation);
+    $tempPermutation = $permutation;
+    $finalPermutation = $permutation;
+    $T0 = 10000;
+    $L = sizeof($permutation) * sizeof($permutation);
+    
     
     while($Tend < $T0){
         for($k = 0; $k < $L; $k++){
-            $i = rand(0, sizeof($tempPermutation) - 1);
-            $j = rand(0, sizeof($tempPermutation) - 1);
+            $i = rand(1, sizeof($permutation) - 2);
+            $j = rand(1, sizeof($permutation) - 2);
 
             $newPermutation = swap($tempPermutation, $i, $j);
             if(calculateTotalDistance($tempPermutation,$distanceMatrix) > calculateTotalDistance($newPermutation,$distanceMatrix)){
-                
+                $dCmax = calculateTotalDistance($tempPermutation,$distanceMatrix) - calculateTotalDistance($newPermutation,$distanceMatrix);
+                $r = rand(0, 10000) / 10000;
+                if($r >= exp($dCmax/$T0)){
+                    $newPermutation = $tempPermutation;
+                }
+            }
+            if(checkConditions($newPermutation, $orderMatrix,$hub) != FALSE)
+                $tempPermutation = $newPermutation;
+            if(calculateTotalDistance($tempPermutation,$distanceMatrix) < calculateTotalDistance($finalPermutation,$distanceMatrix)){
+                $finalPermutation = $tempPermutation;
             }
         }
-    }
-
-    
-    return $tempPermutation;
+        $it++;
+        $T0 = reduceT($T0, $it);
+    } 
+    return $finalPermutation;
 }
 
 ?>
